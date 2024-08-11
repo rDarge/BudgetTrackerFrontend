@@ -26,6 +26,25 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface AccountData
+ */
+export interface AccountData {
+    /**
+     * 
+     * @type {number}
+     * @memberof AccountData
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AccountData
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
  * @interface HTTPValidationError
  */
 export interface HTTPValidationError {
@@ -35,6 +54,19 @@ export interface HTTPValidationError {
      * @memberof HTTPValidationError
      */
     'detail'?: Array<ValidationError>;
+}
+/**
+ * 
+ * @export
+ * @interface PostAccountRequest
+ */
+export interface PostAccountRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PostAccountRequest
+     */
+    'name': string;
 }
 /**
  * 
@@ -76,16 +108,50 @@ export interface ValidationErrorLocInner {
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
+         * Testing: curl localhost:8000/accounts
+         * @summary Get Accounts
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAccountsAccountsGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/accounts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Testing: curl -L -F \"uploadFile=@test_data/sensitive/sample_transactions_checking.CSV\" http://localhost:8000/account/1/import
          * @summary Import Csv
+         * @param {number} accountId 
          * @param {File} uploadFile 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        importCsvImportPost: async (uploadFile: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        importCsvAccountAccountIdImportPost: async (accountId: number, uploadFile: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('importCsvAccountAccountIdImportPost', 'accountId', accountId)
             // verify required parameter 'uploadFile' is not null or undefined
-            assertParamExists('importCsvImportPost', 'uploadFile', uploadFile)
-            const localVarPath = `/import`;
+            assertParamExists('importCsvAccountAccountIdImportPost', 'uploadFile', uploadFile)
+            const localVarPath = `/account/{account_id}/import`
+                .replace(`{${"account_id"}}`, encodeURIComponent(String(accountId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -110,6 +176,42 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Testing: curl -H \"Content-Type: application/json\" -d \"{\"name\":\"test\"}\" http://localhost:8000/account
+         * @summary Post Account
+         * @param {PostAccountRequest} postAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postAccountAccountPost: async (postAccountRequest: PostAccountRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postAccountRequest' is not null or undefined
+            assertParamExists('postAccountAccountPost', 'postAccountRequest', postAccountRequest)
+            const localVarPath = `/account`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(postAccountRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -157,16 +259,42 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
+         * Testing: curl localhost:8000/accounts
+         * @summary Get Accounts
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAccountsAccountsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AccountData>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccountsAccountsGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getAccountsAccountsGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Testing: curl -L -F \"uploadFile=@test_data/sensitive/sample_transactions_checking.CSV\" http://localhost:8000/account/1/import
          * @summary Import Csv
+         * @param {number} accountId 
          * @param {File} uploadFile 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async importCsvImportPost(uploadFile: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.importCsvImportPost(uploadFile, options);
+        async importCsvAccountAccountIdImportPost(accountId: number, uploadFile: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.importCsvAccountAccountIdImportPost(accountId, uploadFile, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.importCsvImportPost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.importCsvAccountAccountIdImportPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Testing: curl -H \"Content-Type: application/json\" -d \"{\"name\":\"test\"}\" http://localhost:8000/account
+         * @summary Post Account
+         * @param {PostAccountRequest} postAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postAccountAccountPost(postAccountRequest: PostAccountRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccountData>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postAccountAccountPost(postAccountRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.postAccountAccountPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -192,14 +320,34 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = DefaultApiFp(configuration)
     return {
         /**
-         * 
+         * Testing: curl localhost:8000/accounts
+         * @summary Get Accounts
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAccountsAccountsGet(options?: any): AxiosPromise<Array<AccountData>> {
+            return localVarFp.getAccountsAccountsGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Testing: curl -L -F \"uploadFile=@test_data/sensitive/sample_transactions_checking.CSV\" http://localhost:8000/account/1/import
          * @summary Import Csv
+         * @param {number} accountId 
          * @param {File} uploadFile 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        importCsvImportPost(uploadFile: File, options?: any): AxiosPromise<any> {
-            return localVarFp.importCsvImportPost(uploadFile, options).then((request) => request(axios, basePath));
+        importCsvAccountAccountIdImportPost(accountId: number, uploadFile: File, options?: any): AxiosPromise<any> {
+            return localVarFp.importCsvAccountAccountIdImportPost(accountId, uploadFile, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Testing: curl -H \"Content-Type: application/json\" -d \"{\"name\":\"test\"}\" http://localhost:8000/account
+         * @summary Post Account
+         * @param {PostAccountRequest} postAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postAccountAccountPost(postAccountRequest: PostAccountRequest, options?: any): AxiosPromise<AccountData> {
+            return localVarFp.postAccountAccountPost(postAccountRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -221,15 +369,39 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  */
 export class DefaultApi extends BaseAPI {
     /**
-     * 
+     * Testing: curl localhost:8000/accounts
+     * @summary Get Accounts
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getAccountsAccountsGet(options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getAccountsAccountsGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Testing: curl -L -F \"uploadFile=@test_data/sensitive/sample_transactions_checking.CSV\" http://localhost:8000/account/1/import
      * @summary Import Csv
+     * @param {number} accountId 
      * @param {File} uploadFile 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public importCsvImportPost(uploadFile: File, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).importCsvImportPost(uploadFile, options).then((request) => request(this.axios, this.basePath));
+    public importCsvAccountAccountIdImportPost(accountId: number, uploadFile: File, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).importCsvAccountAccountIdImportPost(accountId, uploadFile, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Testing: curl -H \"Content-Type: application/json\" -d \"{\"name\":\"test\"}\" http://localhost:8000/account
+     * @summary Post Account
+     * @param {PostAccountRequest} postAccountRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public postAccountAccountPost(postAccountRequest: PostAccountRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).postAccountAccountPost(postAccountRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
