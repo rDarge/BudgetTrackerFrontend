@@ -25,13 +25,12 @@ export function UploadCSVElement(props: {api: DefaultApi, account: AccountData})
     }
 
     return (
-        <div>
-            <div className="row-auto">
+        <div className="flex flex-row items-center justify-between gap-6">
+            <label>Import transactions</label>
+            <div className="">
                 <input type="file" onChange={handleChange}/>
             </div>
-            <div className="row-auto">
-                <button onClick={submitFile}>Upload</button>
-            </div>
+            <button className="button-action" onClick={submitFile}>Upload</button>
         </div>
         
     )

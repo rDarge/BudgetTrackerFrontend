@@ -46,7 +46,7 @@ body {
 }
 
 button {
-  padding:.3em
+  padding:.5em
 }
 
 .button-confirm {
@@ -55,4 +55,9 @@ button {
 
 .button-cancel {
   background-color: rosybrown;
+}
+
+.button-action {
+  background-color: cornflowerblue;
+  color:white;
 }
