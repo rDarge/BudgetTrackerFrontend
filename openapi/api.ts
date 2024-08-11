@@ -45,6 +45,31 @@ export interface AccountData {
 /**
  * 
  * @export
+ * @interface GetTransactionsResponse
+ */
+export interface GetTransactionsResponse {
+    /**
+     * 
+     * @type {Array<TransactionData>}
+     * @memberof GetTransactionsResponse
+     */
+    'transactions': Array<TransactionData>;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetTransactionsResponse
+     */
+    'page': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof GetTransactionsResponse
+     */
+    'per_page': number;
+}
+/**
+ * 
+ * @export
  * @interface HTTPValidationError
  */
 export interface HTTPValidationError {
@@ -67,6 +92,55 @@ export interface PostAccountRequest {
      * @memberof PostAccountRequest
      */
     'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface TransactionData
+ */
+export interface TransactionData {
+    /**
+     * 
+     * @type {number}
+     * @memberof TransactionData
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionData
+     */
+    'init_date': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionData
+     */
+    'post_date': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionData
+     */
+    'description': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransactionData
+     */
+    'amount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransactionData
+     */
+    'account_id': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransactionData
+     */
+    'category_id': number;
 }
 /**
  * 
@@ -125,6 +199,50 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get Transactions
+         * @param {number} accountId 
+         * @param {number} [page] 
+         * @param {number} [perPage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTransactionsAccountAccountIdTransactionsGet: async (accountId: number, page?: number, perPage?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('getTransactionsAccountAccountIdTransactionsGet', 'accountId', accountId)
+            const localVarPath = `/account/{account_id}/transactions`
+                .replace(`{${"account_id"}}`, encodeURIComponent(String(accountId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (perPage !== undefined) {
+                localVarQueryParameter['per_page'] = perPage;
+            }
 
 
     
@@ -271,6 +389,21 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * 
+         * @summary Get Transactions
+         * @param {number} accountId 
+         * @param {number} [page] 
+         * @param {number} [perPage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTransactionsAccountAccountIdTransactionsGet(accountId: number, page?: number, perPage?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetTransactionsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTransactionsAccountAccountIdTransactionsGet(accountId, page, perPage, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getTransactionsAccountAccountIdTransactionsGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Testing: curl -L -F \"uploadFile=@test_data/sensitive/sample_transactions_checking.CSV\" http://localhost:8000/account/1/import
          * @summary Import Csv
          * @param {number} accountId 
@@ -329,6 +462,18 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getAccountsAccountsGet(options).then((request) => request(axios, basePath));
         },
         /**
+         * 
+         * @summary Get Transactions
+         * @param {number} accountId 
+         * @param {number} [page] 
+         * @param {number} [perPage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTransactionsAccountAccountIdTransactionsGet(accountId: number, page?: number, perPage?: number, options?: any): AxiosPromise<GetTransactionsResponse> {
+            return localVarFp.getTransactionsAccountAccountIdTransactionsGet(accountId, page, perPage, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Testing: curl -L -F \"uploadFile=@test_data/sensitive/sample_transactions_checking.CSV\" http://localhost:8000/account/1/import
          * @summary Import Csv
          * @param {number} accountId 
@@ -377,6 +522,20 @@ export class DefaultApi extends BaseAPI {
      */
     public getAccountsAccountsGet(options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getAccountsAccountsGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get Transactions
+     * @param {number} accountId 
+     * @param {number} [page] 
+     * @param {number} [perPage] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getTransactionsAccountAccountIdTransactionsGet(accountId: number, page?: number, perPage?: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getTransactionsAccountAccountIdTransactionsGet(accountId, page, perPage, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
