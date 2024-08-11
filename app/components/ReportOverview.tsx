@@ -1,10 +1,10 @@
 'use client';
 
 
-import { Configuration, DefaultApi } from "@/openapi";
+import { AccountData, DefaultApi } from "@/openapi";
 import React, { ChangeEvent, useState } from "react";
 
-export function UploadCSVElement(): React.ReactElement {
+export function UploadCSVElement(props: {api: DefaultApi, account: AccountData}): React.ReactElement {
     const [file, setFile] = useState<File|null>(null)
     const [test, setText] = useState(null)
 
@@ -18,9 +18,7 @@ export function UploadCSVElement(): React.ReactElement {
 
     const submitFile = async () => {
         if(file) {
-            const configuration = new Configuration({basePath:"http://localhost:8000"})
-            const api = new DefaultApi(configuration)
-            const result = await api.importCsvImportPost(file)
+            const result = await props.api.importCsvAccountAccountIdImportPost(props.account.id, file)
             console.log(result)
             setFile(null)
         }
