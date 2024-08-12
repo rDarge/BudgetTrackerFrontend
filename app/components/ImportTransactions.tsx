@@ -4,7 +4,7 @@ import { AccountData, DefaultApi } from '@/openapi'
 import React, { ChangeEvent, useState } from 'react'
 import { ModalPopup } from './ModalPopup'
 
-export function UploadCSVElement(props: {
+export function ImportTransactionsButton(props: {
     api: DefaultApi
     account: AccountData
 }): React.ReactElement {
@@ -28,8 +28,6 @@ export function UploadCSVElement(props: {
             setFile(null)
         }
     }
-
-    const openPopup = () => {}
 
     return (
         <>

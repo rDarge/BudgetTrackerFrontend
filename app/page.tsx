@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import { UploadCSVElement } from './components/ReportOverview'
+import { ImportTransactionsButton } from './components/ImportTransactions'
 import React, { useState } from 'react'
 import { AccountSelector } from './components/AccountSelector'
 import { AccountData, Configuration, DefaultApi } from '@/openapi'
@@ -20,7 +20,7 @@ export default function Home() {
     return (
         <main className="flex min-h-screen flex-row items-center justify-between">
             <div className="p-24">Left</div>
-            <div className="flex min-h-screen flex-col items-center justify-between p-24">
+            <div className="flex min-h-screen flex-col items-center justify-between p-6">
                 <div>
                     <AccountSelector
                         api={api}
@@ -34,13 +34,18 @@ export default function Home() {
                             <span>Account details</span>
                         </div>
                         <TransactionSummary api={api} account={account} />
-                        <UploadCSVElement api={api} account={account} />
+                        <div className="flex flex-row items-center justify-center">
+                            <ImportTransactionsButton
+                                api={api}
+                                account={account}
+                            />
+                        </div>
                     </div>
                 ) : (
                     <div>Select an account above to begin</div>
                 )}
                 <div>
-                    <span>Footer</span>
+                    <span>You need a budget!</span>
                 </div>
             </div>
             <div>{/* <span>Right column hidden</span> */}</div>

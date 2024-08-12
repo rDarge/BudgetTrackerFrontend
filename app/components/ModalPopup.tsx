@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 export function ModalPopup(props: {
-    children: ReactNode[]
+    children: ReactNode[] | ReactNode
     classNames?: string
 }): React.ReactElement {
     const defaultClasses =
