@@ -45,6 +45,50 @@ export interface AccountData {
 /**
  * 
  * @export
+ * @interface CategoryData
+ */
+export interface CategoryData {
+    /**
+     * 
+     * @type {number}
+     * @memberof CategoryData
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CategoryData
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CategoryData
+     */
+    'supercategory_id': number;
+}
+/**
+ * 
+ * @export
+ * @interface GetCategoriesResponse
+ */
+export interface GetCategoriesResponse {
+    /**
+     * 
+     * @type {Array<SupercategoryData>}
+     * @memberof GetCategoriesResponse
+     */
+    'superCategories': Array<SupercategoryData>;
+    /**
+     * 
+     * @type {Array<CategoryData>}
+     * @memberof GetCategoriesResponse
+     */
+    'categories': Array<CategoryData>;
+}
+/**
+ * 
+ * @export
  * @interface GetTransactionsResponse
  */
 export interface GetTransactionsResponse {
@@ -96,6 +140,50 @@ export interface PostAccountRequest {
 /**
  * 
  * @export
+ * @interface PostCategoryRequest
+ */
+export interface PostCategoryRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PostCategoryRequest
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PostCategoryRequest
+     */
+    'supercategory_id': number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PostCategoryRequest
+     */
+    'supercategory_name': number | null;
+}
+/**
+ * 
+ * @export
+ * @interface SupercategoryData
+ */
+export interface SupercategoryData {
+    /**
+     * 
+     * @type {number}
+     * @memberof SupercategoryData
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof SupercategoryData
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
  * @interface TransactionData
  */
 export interface TransactionData {
@@ -110,7 +198,7 @@ export interface TransactionData {
      * @type {string}
      * @memberof TransactionData
      */
-    'init_date': string | null;
+    'init_date'?: string | null;
     /**
      * 
      * @type {string}
@@ -140,7 +228,7 @@ export interface TransactionData {
      * @type {number}
      * @memberof TransactionData
      */
-    'category_id': number;
+    'category_id'?: number | null;
 }
 /**
  * 
@@ -189,6 +277,36 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          */
         getAccountsAccountsGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/accounts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Getcategories
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCategoriesCategoriesGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/categories`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -338,6 +456,42 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary Post Category
+         * @param {PostCategoryRequest} postCategoryRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postCategoryCategoryPost: async (postCategoryRequest: PostCategoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postCategoryRequest' is not null or undefined
+            assertParamExists('postCategoryCategoryPost', 'postCategoryRequest', postCategoryRequest)
+            const localVarPath = `/category`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(postCategoryRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Root
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -390,6 +544,18 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Getcategories
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCategoriesCategoriesGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetCategoriesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCategoriesCategoriesGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getCategoriesCategoriesGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Get Transactions
          * @param {number} accountId 
          * @param {number} [page] 
@@ -432,6 +598,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Post Category
+         * @param {PostCategoryRequest} postCategoryRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postCategoryCategoryPost(postCategoryRequest: PostCategoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CategoryData>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postCategoryCategoryPost(postCategoryRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.postCategoryCategoryPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Root
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -460,6 +639,15 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         getAccountsAccountsGet(options?: any): AxiosPromise<Array<AccountData>> {
             return localVarFp.getAccountsAccountsGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Getcategories
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCategoriesCategoriesGet(options?: any): AxiosPromise<GetCategoriesResponse> {
+            return localVarFp.getCategoriesCategoriesGet(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -496,6 +684,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @summary Post Category
+         * @param {PostCategoryRequest} postCategoryRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postCategoryCategoryPost(postCategoryRequest: PostCategoryRequest, options?: any): AxiosPromise<CategoryData> {
+            return localVarFp.postCategoryCategoryPost(postCategoryRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Root
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -522,6 +720,17 @@ export class DefaultApi extends BaseAPI {
      */
     public getAccountsAccountsGet(options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).getAccountsAccountsGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Getcategories
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getCategoriesCategoriesGet(options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getCategoriesCategoriesGet(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -561,6 +770,18 @@ export class DefaultApi extends BaseAPI {
      */
     public postAccountAccountPost(postAccountRequest: PostAccountRequest, options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).postAccountAccountPost(postAccountRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Post Category
+     * @param {PostCategoryRequest} postCategoryRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public postCategoryCategoryPost(postCategoryRequest: PostCategoryRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).postCategoryCategoryPost(postCategoryRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
