@@ -1,37 +1,63 @@
-'use client';
+'use client'
 
+import { AccountData, DefaultApi } from '@/openapi'
+import React, { ChangeEvent, useState } from 'react'
+import { ModalPopup } from './ModalPopup'
 
-import { AccountData, DefaultApi } from "@/openapi";
-import React, { ChangeEvent, useState } from "react";
-
-export function UploadCSVElement(props: {api: DefaultApi, account: AccountData}): React.ReactElement {
-    const [file, setFile] = useState<File|null>(null)
-    const [test, setText] = useState(null)
+export function UploadCSVElement(props: {
+    api: DefaultApi
+    account: AccountData
+}): React.ReactElement {
+    const [file, setFile] = useState<File | null>(null)
+    const [showPopup, setShowPopup] = useState<boolean>(false)
 
     function handleChange(event: ChangeEvent) {
         const target = event.target as HTMLInputElement
-        if(target.files){
+        if (target.files) {
             setFile(target.files[0])
         }
     }
 
-
     const submitFile = async () => {
-        if(file) {
-            const result = await props.api.importCsvAccountAccountIdImportPost(props.account.id, file)
+        if (file) {
+            const result = await props.api.importCsvAccountAccountIdImportPost(
+                props.account.id,
+                file
+            )
             console.log(result)
             setFile(null)
         }
     }
 
+    const openPopup = () => {}
+
     return (
-        <div className="flex flex-row items-center justify-between gap-6">
-            <label>Import transactions</label>
-            <div className="">
-                <input type="file" onChange={handleChange}/>
-            </div>
-            <button className="button-action" onClick={submitFile}>Upload</button>
-        </div>
-        
+        <>
+            <button
+                className="button-action"
+                onClick={() => setShowPopup(true)}
+            >
+                Import Transactions
+            </button>
+            {showPopup && (
+                <ModalPopup>
+                    <label>Import transactions</label>
+                    <div className="">
+                        <input type="file" onChange={handleChange} />
+                    </div>
+                    <div className="flex flex-row gap-3">
+                        <button className="button-action" onClick={submitFile}>
+                            Upload
+                        </button>
+                        <button
+                            className="button-cancel"
+                            onClick={() => setShowPopup(false)}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </ModalPopup>
+            )}
+        </>
     )
 }
