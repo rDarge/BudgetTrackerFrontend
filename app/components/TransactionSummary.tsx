@@ -2,27 +2,28 @@ import {
     AccountData,
     CategoryData,
     DefaultApi,
+    GetCategoriesResponse,
     SupercategoryData,
     TransactionData,
 } from '@/openapi'
-import { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { ModalPopup } from './ModalPopup'
+import { CategoryUpdate, TransactionDetail } from './TransactionDetail'
 
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
 })
 
+type categoryMap = Map<number, CategoryData>
+type superMap = Map<number, SupercategoryData>
+
 export function TransactionSummary(props: {
     api: DefaultApi
     account: AccountData | null
 }): React.ReactElement {
-    const [categories, setCategories] = useState<Map<number, CategoryData>>(
-        new Map()
-    )
-    const [superCategories, setSupercategories] = useState<
-        Map<number, SupercategoryData>
-    >(new Map())
+    const [categories, setCategories] = useState<categoryMap>(new Map())
+    const [superCategories, setSupercategories] = useState<superMap>(new Map())
     const [transactions, setTransactions] = useState<TransactionData[]>([])
     const [loading, setLoading] = useState<boolean>(false)
     const [curTransaction, setCurTransaction] =
@@ -32,10 +33,7 @@ export function TransactionSummary(props: {
         async function fetchCategories() {
             setLoading(true)
             const response = await props.api.getCategoriesCategoriesGet()
-            const categories = response.data.categories
-            const supers = response.data.superCategories
-            setCategories(new Map(categories.map((cat) => [cat.id, cat])))
-            setSupercategories(new Map(supers.map((cat) => [cat.id, cat])))
+            updateCategories(response.data)
             setLoading(false)
         }
 
@@ -58,26 +56,64 @@ export function TransactionSummary(props: {
         }
     }, [props.api, props.account])
 
-    const categorizeTransaction = (transaction: TransactionData) => {
-        setCurTransaction(transaction)
+    const updateCategories = (response: GetCategoriesResponse) => {
+        const categories = response.categories
+        const supers = response.superCategories
+        setCategories(new Map(categories.map((cat) => [cat.id, cat])))
+        setSupercategories(new Map(supers.map((cat) => [cat.id, cat])))
     }
 
-    const getCategory = (categoryId: number | null | undefined) => {
-        return categoryId ? categories.get(categoryId)?.name : 'Uncategorized'
+    const refreshState = async () => {
+        if (props.account) {
+            setLoading(true)
+            const transactions =
+                await props.api.getTransactionsAccountAccountIdTransactionsGet(
+                    props.account.id
+                )
+            setTransactions(transactions.data.transactions)
+            const categories = await props.api.getCategoriesCategoriesGet()
+            updateCategories(categories.data)
+            setLoading(false)
+        }
+    }
+
+    const saveCurTransaction = async (args: CategoryUpdate) => {
+        const updatedTransaction = {
+            ...curTransaction!,
+            category_id: args.categoryId,
+        }
+        await props.api.updateTransactionTransactionsPut({
+            transaction: updatedTransaction,
+            newCategoryName: args.categoryName,
+            superId: args.superId,
+            newSuperName: args.superName,
+        })
+        await refreshState()
+        setCurTransaction(null)
+    }
+
+    const presentTransactionDetails = (transaction: TransactionData) => {
+        setCurTransaction(transaction)
     }
 
     const getTransactionElements = () => {
         const elements: ReactNode[] = []
         for (const transaction of transactions) {
             elements.push(
-                <tr key={transaction.id}>
+                <tr
+                    key={transaction.id}
+                    onClick={() => presentTransactionDetails(transaction)}
+                >
                     <td>{transaction.post_date}</td>
                     <td>{transaction.description}</td>
                     <td className="text-right">
                         {formatter.format(transaction.amount)}
                     </td>
-                    <td onClick={() => categorizeTransaction(transaction)}>
-                        {getCategory(transaction.category_id)}
+                    {/* TODO replace stopPropagation with new dialog to create rules for category based on transaction description */}
+                    <td onClick={(e) => e.stopPropagation()}>
+                        {transaction.category_id
+                            ? categories.get(transaction.category_id)?.name
+                            : 'Unclassified'}
                     </td>
                 </tr>
             )
@@ -117,26 +153,13 @@ export function TransactionSummary(props: {
             </table>
             {curTransaction && (
                 <ModalPopup>
-                    <span>Transaction Details</span>
-                    <table>
-                        <tr>
-                            <td>Date</td>
-                            <td>{curTransaction.post_date}</td>
-                        </tr>
-                        <tr>
-                            <td>Description</td>
-                            <td>{curTransaction.description}</td>
-                        </tr>
-                        <tr>
-                            <td>Amount</td>
-                            <td>{curTransaction.amount}</td>
-                        </tr>
-                        <tr>
-                            <td>Category</td>
-                            <td>{getCategory(curTransaction.category_id)}</td>
-                            {/* TODO finish allowing users to set categories, add as rule */}
-                        </tr>
-                    </table>
+                    <TransactionDetail
+                        transaction={curTransaction}
+                        categories={categories}
+                        supercategories={superCategories}
+                        onUpdate={saveCurTransaction}
+                        onCancel={() => setCurTransaction(null)}
+                    />
                 </ModalPopup>
             )}
         </div>
