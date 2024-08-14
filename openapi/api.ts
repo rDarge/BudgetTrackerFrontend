@@ -233,6 +233,86 @@ export interface TransactionData {
 /**
  * 
  * @export
+ * @interface UpdateTransactionRequest
+ */
+export interface UpdateTransactionRequest {
+    /**
+     * 
+     * @type {TransactionData}
+     * @memberof UpdateTransactionRequest
+     */
+    'transaction': TransactionData;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateTransactionRequest
+     */
+    'newCategoryName'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateTransactionRequest
+     */
+    'superId'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateTransactionRequest
+     */
+    'newSuperName'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateTransactionResponse
+ */
+export interface UpdateTransactionResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateTransactionResponse
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateTransactionResponse
+     */
+    'init_date'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateTransactionResponse
+     */
+    'post_date': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateTransactionResponse
+     */
+    'description': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateTransactionResponse
+     */
+    'amount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateTransactionResponse
+     */
+    'account_id': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateTransactionResponse
+     */
+    'category_id'?: number | null;
+}
+/**
+ * 
+ * @export
  * @interface ValidationError
  */
 export interface ValidationError {
@@ -520,6 +600,42 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Update Transaction
+         * @param {UpdateTransactionRequest} updateTransactionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateTransactionTransactionsPut: async (updateTransactionRequest: UpdateTransactionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'updateTransactionRequest' is not null or undefined
+            assertParamExists('updateTransactionTransactionsPut', 'updateTransactionRequest', updateTransactionRequest)
+            const localVarPath = `/transactions`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateTransactionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -621,6 +737,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.rootGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @summary Update Transaction
+         * @param {UpdateTransactionRequest} updateTransactionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateTransactionTransactionsPut(updateTransactionRequest: UpdateTransactionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpdateTransactionResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateTransactionTransactionsPut(updateTransactionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateTransactionTransactionsPut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -700,6 +829,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         rootGet(options?: any): AxiosPromise<any> {
             return localVarFp.rootGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update Transaction
+         * @param {UpdateTransactionRequest} updateTransactionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateTransactionTransactionsPut(updateTransactionRequest: UpdateTransactionRequest, options?: any): AxiosPromise<UpdateTransactionResponse> {
+            return localVarFp.updateTransactionTransactionsPut(updateTransactionRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -793,6 +932,18 @@ export class DefaultApi extends BaseAPI {
      */
     public rootGet(options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).rootGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update Transaction
+     * @param {UpdateTransactionRequest} updateTransactionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public updateTransactionTransactionsPut(updateTransactionRequest: UpdateTransactionRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).updateTransactionTransactionsPut(updateTransactionRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
