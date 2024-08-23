@@ -66,6 +66,12 @@ export interface CategoryData {
      * @memberof CategoryData
      */
     'supercategory_id': number;
+    /**
+     * 
+     * @type {Array<RuleData>}
+     * @memberof CategoryData
+     */
+    'rules': Array<RuleData>;
 }
 /**
  * 
@@ -161,6 +167,25 @@ export interface PostCategoryRequest {
      * @memberof PostCategoryRequest
      */
     'supercategory_name': number | null;
+}
+/**
+ * 
+ * @export
+ * @interface RuleData
+ */
+export interface RuleData {
+    /**
+     * 
+     * @type {string}
+     * @memberof RuleData
+     */
+    'contains': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RuleData
+     */
+    'case_sensitive': boolean;
 }
 /**
  * 
@@ -602,6 +627,42 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary Update Category
+         * @param {CategoryData} categoryData 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateCategoryCategoryPut: async (categoryData: CategoryData, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'categoryData' is not null or undefined
+            assertParamExists('updateCategoryCategoryPut', 'categoryData', categoryData)
+            const localVarPath = `/category`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(categoryData, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Update Transaction
          * @param {UpdateTransactionRequest} updateTransactionRequest 
          * @param {*} [options] Override http request option.
@@ -739,6 +800,19 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Update Category
+         * @param {CategoryData} categoryData 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateCategoryCategoryPut(categoryData: CategoryData, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CategoryData>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCategoryCategoryPut(categoryData, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.updateCategoryCategoryPut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Update Transaction
          * @param {UpdateTransactionRequest} updateTransactionRequest 
          * @param {*} [options] Override http request option.
@@ -829,6 +903,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         rootGet(options?: any): AxiosPromise<any> {
             return localVarFp.rootGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update Category
+         * @param {CategoryData} categoryData 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateCategoryCategoryPut(categoryData: CategoryData, options?: any): AxiosPromise<CategoryData> {
+            return localVarFp.updateCategoryCategoryPut(categoryData, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -932,6 +1016,18 @@ export class DefaultApi extends BaseAPI {
      */
     public rootGet(options?: RawAxiosRequestConfig) {
         return DefaultApiFp(this.configuration).rootGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update Category
+     * @param {CategoryData} categoryData 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public updateCategoryCategoryPut(categoryData: CategoryData, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).updateCategoryCategoryPut(categoryData, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
