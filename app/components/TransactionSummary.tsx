@@ -8,7 +8,8 @@ import {
 } from '@/openapi'
 import React, { ReactNode, useEffect, useState } from 'react'
 import { ModalPopup } from './ModalPopup'
-import { CategoryUpdate, TransactionDetail } from './TransactionDetail'
+import { UpdateTransaction, TransactionDetail } from './TransactionDetail'
+import { CategoryDetail, UpdatedCategory } from './CategoryDetail'
 
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -28,6 +29,7 @@ export function TransactionSummary(props: {
     const [loading, setLoading] = useState<boolean>(false)
     const [curTransaction, setCurTransaction] =
         useState<TransactionData | null>(null)
+    const [curCategory, setCurCategory] = useState<CategoryData | null>(null)
 
     useEffect(() => {
         async function fetchCategories() {
@@ -77,7 +79,7 @@ export function TransactionSummary(props: {
         }
     }
 
-    const saveCurTransaction = async (args: CategoryUpdate) => {
+    const saveCurTransaction = async (args: UpdateTransaction) => {
         const updatedTransaction = {
             ...curTransaction!,
             category_id: args.categoryId,
@@ -89,11 +91,28 @@ export function TransactionSummary(props: {
             newSuperName: args.superName,
         })
         await refreshState()
+        clearCurSelections()
+    }
+
+    const saveCurCategory = async (category: UpdatedCategory) => {
+        await props.api.updateCategoryCategoryPut(category)
+        await refreshState()
+        clearCurSelections()
+    }
+
+    const clearCurSelections = () => {
         setCurTransaction(null)
+        setCurCategory(null)
     }
 
     const presentTransactionDetails = (transaction: TransactionData) => {
         setCurTransaction(transaction)
+    }
+
+    const presentCategoryDetails = (transaction: TransactionData) => {
+        if (transaction.category_id != null) {
+            setCurCategory(categories.get(transaction.category_id!)!)
+        }
     }
 
     const getTransactionElements = () => {
@@ -110,7 +129,7 @@ export function TransactionSummary(props: {
                         {formatter.format(transaction.amount)}
                     </td>
                     {/* TODO replace stopPropagation with new dialog to create rules for category based on transaction description */}
-                    <td onClick={(e) => e.stopPropagation()}>
+                    <td onClick={(e) => presentCategoryDetails(transaction)}>
                         {transaction.category_id
                             ? categories.get(transaction.category_id)?.name
                             : 'Unclassified'}
@@ -151,14 +170,24 @@ export function TransactionSummary(props: {
                     {getTransactionElements()}
                 </tbody>
             </table>
-            {curTransaction && (
+            {curTransaction && !curCategory && (
                 <ModalPopup>
                     <TransactionDetail
                         transaction={curTransaction}
                         categories={categories}
                         supercategories={superCategories}
                         onUpdate={saveCurTransaction}
-                        onCancel={() => setCurTransaction(null)}
+                        onCancel={clearCurSelections}
+                    />
+                </ModalPopup>
+            )}
+            {curCategory && (
+                <ModalPopup>
+                    <CategoryDetail
+                        category={curCategory}
+                        transaction={curTransaction}
+                        onUpdate={saveCurCategory}
+                        onCancel={clearCurSelections}
                     />
                 </ModalPopup>
             )}

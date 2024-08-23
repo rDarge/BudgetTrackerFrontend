@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useState } from 'react'
 const UNCLASSFIED = -1
 const CREATE_CATEGORY = -2
 
-export interface CategoryUpdate {
+export interface UpdateTransaction {
     categoryId: number
     categoryName: string
     superId: number
@@ -15,7 +15,7 @@ export function TransactionDetail(props: {
     transaction: TransactionData
     categories: Map<number, CategoryData>
     supercategories: Map<number, SupercategoryData>
-    onUpdate: (update: CategoryUpdate) => void
+    onUpdate: (update: UpdateTransaction) => void
     onCancel: () => void
 }): React.ReactElement {
     const [defaultSuperId, setDefaultSuperId] =
@@ -32,7 +32,6 @@ export function TransactionDetail(props: {
         if (props.categories.size > 0) {
             const firstKey = props.categories.keys().next()
             setDefaultCategoryId(firstKey.value)
-            // setNewCategoryId(props.transaction.category_id || firstKey.value)
         }
         if (props.supercategories.size > 0) {
             const firstKey = props.supercategories.keys().next()
@@ -182,16 +181,11 @@ export function TransactionDetail(props: {
                 )}
             </table>
             <div className="flex flex-row gap-6">
-                <button
-                    onClick={submit}
-                    // onClick={() => saveCurTransaction()}
-                    className="button-confirm"
-                >
+                <button onClick={submit} className="button-confirm">
                     Save
                 </button>
                 <button
                     onClick={() => props.onCancel()}
-                    // onClick={() => setCurTransaction(null)}
                     className="button-cancel"
                 >
                     Cancel

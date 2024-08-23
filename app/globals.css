@@ -60,6 +60,11 @@ button {
 
 .button-confirm {
   background-color: palegreen;
+
+  &:disabled {
+    background-color: #c6c3c3;
+    color:white;
+  }
 }
 
 .button-cancel {
@@ -69,4 +74,8 @@ button {
 .button-action {
   background-color: cornflowerblue;
   color:white;
+}
+
+.rule-input {
+  width: 40rem;
 }
