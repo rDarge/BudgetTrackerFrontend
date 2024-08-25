@@ -10,8 +10,10 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { ModalPopup } from './ModalPopup'
 import { UpdateTransaction, TransactionDetail } from './TransactionDetail'
 import { CategoryDetail, UpdatedCategory } from './CategoryDetail'
+import { ImportTransactionsButton } from './ImportTransactions'
+import { CategorizeTransactionsButton } from './CategorizeTransactions'
 
-const formatter = new Intl.NumberFormat('en-US', {
+export const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
 })
@@ -190,6 +192,19 @@ export function TransactionSummary(props: {
                         onCancel={clearCurSelections}
                     />
                 </ModalPopup>
+            )}
+            {props.account && (
+                <div className="flex flex-row items-center justify-center gap-3">
+                    <ImportTransactionsButton
+                        api={props.api}
+                        account={props.account}
+                    />
+                    <CategorizeTransactionsButton
+                        api={props.api}
+                        account={props.account}
+                        onApply={refreshState}
+                    />
+                </div>
             )}
         </div>
     )

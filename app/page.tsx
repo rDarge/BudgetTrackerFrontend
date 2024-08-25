@@ -1,6 +1,4 @@
 'use client'
-import Image from 'next/image'
-import { ImportTransactionsButton } from './components/ImportTransactions'
 import React, { useState } from 'react'
 import { AccountSelector } from './components/AccountSelector'
 import { AccountData, Configuration, DefaultApi } from '@/openapi'
@@ -34,12 +32,6 @@ export default function Home() {
                             <span>Account details</span>
                         </div>
                         <TransactionSummary api={api} account={account} />
-                        <div className="flex flex-row items-center justify-center">
-                            <ImportTransactionsButton
-                                api={api}
-                                account={account}
-                            />
-                        </div>
                     </div>
                 ) : (
                     <div>Select an account above to begin</div>

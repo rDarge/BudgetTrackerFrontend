@@ -35,7 +35,7 @@ export function ImportTransactionsButton(props: {
                 className="button-action"
                 onClick={() => setShowPopup(true)}
             >
-                Import Transactions
+                Import
             </button>
             {showPopup && (
                 <ModalPopup>
