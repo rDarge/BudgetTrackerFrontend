@@ -45,6 +45,32 @@ export interface AccountData {
 /**
  * 
  * @export
+ * @interface ApplyRulesRequest
+ */
+export interface ApplyRulesRequest {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplyRulesRequest
+     */
+    'preview': boolean;
+}
+/**
+ * 
+ * @export
+ * @interface ApplyRulesResponse
+ */
+export interface ApplyRulesResponse {
+    /**
+     * 
+     * @type {Array<TransactionUpdates>}
+     * @memberof ApplyRulesResponse
+     */
+    'updated_transactions': Array<TransactionUpdates>;
+}
+/**
+ * 
+ * @export
  * @interface CategoryData
  */
 export interface CategoryData {
@@ -235,6 +261,12 @@ export interface TransactionData {
      * @type {string}
      * @memberof TransactionData
      */
+    'verified_at'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionData
+     */
     'description': string;
     /**
      * 
@@ -254,6 +286,31 @@ export interface TransactionData {
      * @memberof TransactionData
      */
     'category_id'?: number | null;
+}
+/**
+ * 
+ * @export
+ * @interface TransactionUpdates
+ */
+export interface TransactionUpdates {
+    /**
+     * 
+     * @type {TransactionData}
+     * @memberof TransactionUpdates
+     */
+    'transaction': TransactionData;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionUpdates
+     */
+    'old_category': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransactionUpdates
+     */
+    'new_category': string;
 }
 /**
  * 
@@ -310,6 +367,12 @@ export interface UpdateTransactionResponse {
      * @memberof UpdateTransactionResponse
      */
     'post_date': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateTransactionResponse
+     */
+    'verified_at'?: string | null;
     /**
      * 
      * @type {string}
@@ -374,6 +437,46 @@ export interface ValidationErrorLocInner {
  */
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @summary Apply Rules
+         * @param {number} accountId 
+         * @param {ApplyRulesRequest} applyRulesRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        applyRulesAccountAccountIdApplyRulesPost: async (accountId: number, applyRulesRequest: ApplyRulesRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'accountId' is not null or undefined
+            assertParamExists('applyRulesAccountAccountIdApplyRulesPost', 'accountId', accountId)
+            // verify required parameter 'applyRulesRequest' is not null or undefined
+            assertParamExists('applyRulesAccountAccountIdApplyRulesPost', 'applyRulesRequest', applyRulesRequest)
+            const localVarPath = `/account/{account_id}/apply-rules`
+                .replace(`{${"account_id"}}`, encodeURIComponent(String(accountId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(applyRulesRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * Testing: curl localhost:8000/accounts
          * @summary Get Accounts
@@ -708,6 +811,20 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
     return {
         /**
+         * 
+         * @summary Apply Rules
+         * @param {number} accountId 
+         * @param {ApplyRulesRequest} applyRulesRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async applyRulesAccountAccountIdApplyRulesPost(accountId: number, applyRulesRequest: ApplyRulesRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplyRulesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.applyRulesAccountAccountIdApplyRulesPost(accountId, applyRulesRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.applyRulesAccountAccountIdApplyRulesPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Testing: curl localhost:8000/accounts
          * @summary Get Accounts
          * @param {*} [options] Override http request option.
@@ -835,6 +952,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = DefaultApiFp(configuration)
     return {
         /**
+         * 
+         * @summary Apply Rules
+         * @param {number} accountId 
+         * @param {ApplyRulesRequest} applyRulesRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        applyRulesAccountAccountIdApplyRulesPost(accountId: number, applyRulesRequest: ApplyRulesRequest, options?: any): AxiosPromise<ApplyRulesResponse> {
+            return localVarFp.applyRulesAccountAccountIdApplyRulesPost(accountId, applyRulesRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Testing: curl localhost:8000/accounts
          * @summary Get Accounts
          * @param {*} [options] Override http request option.
@@ -934,6 +1062,19 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
+    /**
+     * 
+     * @summary Apply Rules
+     * @param {number} accountId 
+     * @param {ApplyRulesRequest} applyRulesRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public applyRulesAccountAccountIdApplyRulesPost(accountId: number, applyRulesRequest: ApplyRulesRequest, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).applyRulesAccountAccountIdApplyRulesPost(accountId, applyRulesRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * Testing: curl localhost:8000/accounts
      * @summary Get Accounts
