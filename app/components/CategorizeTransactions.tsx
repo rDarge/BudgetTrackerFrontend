@@ -107,11 +107,16 @@ export function CategorizeTransactionsButton(props: {
                                 Preview
                             </button>
                         )}
-                        {!isPreview && (
-                            <button className="button-action" onClick={submit}>
-                                Submit
-                            </button>
-                        )}
+                        {!isPreview &&
+                            results?.updated_transactions &&
+                            results.updated_transactions.length > 0 && (
+                                <button
+                                    className="button-action"
+                                    onClick={submit}
+                                >
+                                    Submit
+                                </button>
+                            )}
 
                         <button className="button-cancel" onClick={close}>
                             Cancel

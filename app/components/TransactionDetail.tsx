@@ -64,7 +64,10 @@ export function TransactionDetail(props: {
         transaction: TransactionData,
         withCreate = false
     ) => {
-        const categoryId = transaction?.category_id || newCategoryId
+        const categoryId =
+            newCategoryId == CREATE_CATEGORY
+                ? CREATE_CATEGORY
+                : transaction?.category_id || newCategoryId
         const categoryElements: ReactNode[] = []
         props.categories.forEach((value, key) => {
             categoryElements.push(
@@ -121,7 +124,8 @@ export function TransactionDetail(props: {
         })
         return (
             <>
-                {newCategorySuperId == CREATE_CATEGORY ? (
+                {newCategorySuperId == CREATE_CATEGORY ||
+                supercategoryElements.length == 0 ? (
                     <>
                         <input
                             type="text"

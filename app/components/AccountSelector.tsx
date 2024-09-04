@@ -14,6 +14,7 @@ export function AccountSelector(props: {
 }): React.ReactElement {
     const [newAccount, setNewAccount] = useState<boolean>(false)
     const [newAccountName, setNewAccountName] = useState<string>('')
+    const [newAccountGroup, setNewAccountGroup] = useState<string>('')
     const [accounts, setAccounts] = useState<AccountData[]>([])
     const [loading, setLoading] = useState<boolean>(false)
     const [selectedAccountId, setSelectedAccountId] =
@@ -34,15 +35,28 @@ export function AccountSelector(props: {
         fetchAccounts()
     }, [props.api])
 
+    const refreshAccounts = async () => {
+        setLoading(true)
+        const accounts = await props.api.getAccountsAccountsGet()
+        setAccounts(accounts.data)
+        setLoading(false)
+    }
+
     const onNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewAccountName(e.target.value)
+    }
+
+    const onGroupInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewAccountGroup(e.target.value)
     }
 
     const createNewAccount = async () => {
         const result = await props.api.postAccountAccountPost({
             name: newAccountName,
+            group: newAccountGroup,
         })
         console.log(`Result is ${result}`)
+        await refreshAccounts()
         props.onSelectAccount(result.data)
         setNewAccount(false)
     }
@@ -50,6 +64,8 @@ export function AccountSelector(props: {
     const chooseAccount = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const chosenOption = parseInt(event.target.value)
         if (chosenOption == CREATE_ACCOUNT) {
+            setNewAccountName('')
+            setNewAccountGroup('')
             setNewAccount(true)
             event.preventDefault()
         } else if (chosenOption != DEFAULT_OPTION) {
@@ -81,7 +97,7 @@ export function AccountSelector(props: {
         for (const account of accounts) {
             options.push(
                 <option key={`list-${account.id}`} value={account.id}>
-                    {account.name}
+                    {account.group} {account.name}
                 </option>
             )
         }
@@ -107,8 +123,16 @@ export function AccountSelector(props: {
                     <label>Account Name:</label>
                     <input
                         type="text"
+                        placeholder="Checking/Credit 1234"
                         value={newAccountName}
                         onInput={onNameInput}
+                    ></input>
+                    <label>Account Group:</label>
+                    <input
+                        type="text"
+                        placeholder="Joint or ...?"
+                        value={newAccountGroup}
+                        onInput={onGroupInput}
                     ></input>
                     <div className="flex flex-row justify-between gap-3">
                         <button

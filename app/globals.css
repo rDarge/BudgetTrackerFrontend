@@ -5,77 +5,82 @@
 /*Tailwind class guide: https://tailwind.build/classes*/
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+    :root {
+        --foreground-rgb: 255, 255, 255;
+        --background-start-rgb: 0, 0, 0;
+        --background-end-rgb: 0, 0, 0;
+    }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    color: rgb(var(--foreground-rgb));
+    background: linear-gradient(
+            to bottom,
+            transparent,
+            rgb(var(--background-end-rgb))
+        )
+        rgb(var(--background-start-rgb));
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-  td,
-  th {
-    @apply p-2;
-  }
+    .text-balance {
+        text-wrap: balance;
+    }
+    td,
+    th {
+        @apply p-2;
+    }
 }
 
 .modal-popup-background {
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  background-color:grey;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: grey;
 }
 
 .modal-popup-foreground {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 button {
-  padding:.5em
+    padding: 0.5em;
 }
 
 .button-confirm {
-  background-color: palegreen;
+    background-color: palegreen;
 
-  &:disabled {
-    background-color: #c6c3c3;
-    color:white;
-  }
+    &:disabled {
+        background-color: #c6c3c3;
+        color: white;
+    }
 }
 
 .button-cancel {
-  background-color: rosybrown;
+    background-color: rosybrown;
 }
 
 .button-action {
-  background-color: cornflowerblue;
-  color:white;
+    background-color: cornflowerblue;
+    color: white;
+
+    &:disabled {
+        background-color: #c6c3c3;
+        color: white;
+    }
 }
 
 .rule-input {
-  width: 40rem;
+    width: 40rem;
 }

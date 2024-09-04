@@ -7,6 +7,7 @@ import { ModalPopup } from './ModalPopup'
 export function ImportTransactionsButton(props: {
     api: DefaultApi
     account: AccountData
+    onImport: () => void
 }): React.ReactElement {
     const [file, setFile] = useState<File | null>(null)
     const [showPopup, setShowPopup] = useState<boolean>(false)
@@ -25,7 +26,8 @@ export function ImportTransactionsButton(props: {
                 file
             )
             console.log(result)
-            setFile(null)
+            props.onImport()
+            setShowPopup(false)
         }
     }
 

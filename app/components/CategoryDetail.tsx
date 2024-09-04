@@ -1,9 +1,10 @@
-import { CategoryData, TransactionData } from '@/openapi'
+import { AccountData, CategoryData, TransactionData } from '@/openapi'
 import { ChangeEvent, ReactNode, useState } from 'react'
 
 export interface NewRule {
     contains: string
     case_sensitive: boolean
+    account_id: number
 }
 
 export interface UpdatedCategory {
@@ -16,6 +17,7 @@ export interface UpdatedCategory {
 export function CategoryDetail(props: {
     category: CategoryData
     transaction: TransactionData | null
+    account: AccountData
     onUpdate: (update: UpdatedCategory) => void
     onCancel: () => void
 }): React.ReactElement {
@@ -78,6 +80,7 @@ export function CategoryDetail(props: {
         newCategory.rules.push({
             contains: props.transaction ? props.transaction.description : '',
             case_sensitive: false,
+            account_id: props.transaction!.account_id,
         })
         setUpdatedCategory(newCategory)
         setDirty(true)

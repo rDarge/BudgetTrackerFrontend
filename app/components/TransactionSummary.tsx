@@ -32,6 +32,8 @@ export function TransactionSummary(props: {
     const [curTransaction, setCurTransaction] =
         useState<TransactionData | null>(null)
     const [curCategory, setCurCategory] = useState<CategoryData | null>(null)
+    const [page, setPage] = useState<number>(0)
+    const [pageSize, setPageSize] = useState<number>(20)
 
     useEffect(() => {
         async function fetchCategories() {
@@ -45,11 +47,18 @@ export function TransactionSummary(props: {
     }, [props.api])
 
     useEffect(() => {
+        //Always load first page when changing accounts
+        setPage(0)
+    }, [props.account])
+
+    useEffect(() => {
         async function fetchTransactions(accountId: number) {
             setLoading(true)
             const response =
                 await props.api.getTransactionsAccountAccountIdTransactionsGet(
-                    accountId
+                    accountId,
+                    page,
+                    pageSize
                 )
             setTransactions(response.data.transactions)
             setLoading(false)
@@ -58,7 +67,7 @@ export function TransactionSummary(props: {
         if (props.account) {
             fetchTransactions(props.account.id)
         }
-    }, [props.api, props.account])
+    }, [props.api, props.account, page, pageSize])
 
     const updateCategories = (response: GetCategoriesResponse) => {
         const categories = response.categories
@@ -72,7 +81,9 @@ export function TransactionSummary(props: {
             setLoading(true)
             const transactions =
                 await props.api.getTransactionsAccountAccountIdTransactionsGet(
-                    props.account.id
+                    props.account.id,
+                    page,
+                    pageSize
                 )
             setTransactions(transactions.data.transactions)
             const categories = await props.api.getCategoriesCategoriesGet()
@@ -131,7 +142,14 @@ export function TransactionSummary(props: {
                         {formatter.format(transaction.amount)}
                     </td>
                     {/* TODO replace stopPropagation with new dialog to create rules for category based on transaction description */}
-                    <td onClick={(e) => presentCategoryDetails(transaction)}>
+                    <td
+                        onClick={(e) => presentCategoryDetails(transaction)}
+                        className={
+                            transaction.category_id
+                                ? 'hover:font-bold'
+                                : 'bg-yellow-200 hover:font-bold'
+                        }
+                    >
                         {transaction.category_id
                             ? categories.get(transaction.category_id)?.name
                             : 'Unclassified'}
@@ -158,8 +176,8 @@ export function TransactionSummary(props: {
     }
 
     return (
-        <div>
-            <table className="text-sm">
+        <div className="w-full">
+            <table className="text-sm w-full">
                 <thead>
                     <tr key={'transaction-headers'}>
                         <th>Date</th>
@@ -172,6 +190,39 @@ export function TransactionSummary(props: {
                     {getTransactionElements()}
                 </tbody>
             </table>
+            {props.account && (
+                <div className="flex flex-row items-center justify-between">
+                    <div className="flex flex-row items-center justify-center gap-3">
+                        <button
+                            className="button-action"
+                            disabled={page == 0}
+                            onClick={() => setPage(page - 1)}
+                        >
+                            {Math.max(page - 1, 0)}
+                        </button>
+                        Page {page}
+                        <button
+                            className="button-action"
+                            disabled={transactions.length < pageSize} //This doesn't account for the last page having exactly pageSize elements.
+                            onClick={() => setPage(page + 1)}
+                        >
+                            {page + 1}
+                        </button>
+                    </div>
+                    <div className="flex flex-row items-center justify-center gap-3">
+                        <ImportTransactionsButton
+                            api={props.api}
+                            account={props.account}
+                            onImport={refreshState}
+                        />
+                        <CategorizeTransactionsButton
+                            api={props.api}
+                            account={props.account}
+                            onApply={refreshState}
+                        />
+                    </div>
+                </div>
+            )}
             {curTransaction && !curCategory && (
                 <ModalPopup>
                     <TransactionDetail
@@ -183,28 +234,16 @@ export function TransactionSummary(props: {
                     />
                 </ModalPopup>
             )}
-            {curCategory && (
+            {curCategory && props.account && (
                 <ModalPopup>
                     <CategoryDetail
                         category={curCategory}
                         transaction={curTransaction}
+                        account={props.account}
                         onUpdate={saveCurCategory}
                         onCancel={clearCurSelections}
                     />
                 </ModalPopup>
-            )}
-            {props.account && (
-                <div className="flex flex-row items-center justify-center gap-3">
-                    <ImportTransactionsButton
-                        api={props.api}
-                        account={props.account}
-                    />
-                    <CategorizeTransactionsButton
-                        api={props.api}
-                        account={props.account}
-                        onApply={refreshState}
-                    />
-                </div>
             )}
         </div>
     )

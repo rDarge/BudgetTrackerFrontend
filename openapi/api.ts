@@ -41,6 +41,12 @@ export interface AccountData {
      * @memberof AccountData
      */
     'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AccountData
+     */
+    'group': string;
 }
 /**
  * 
@@ -168,6 +174,12 @@ export interface PostAccountRequest {
      * @memberof PostAccountRequest
      */
     'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostAccountRequest
+     */
+    'group': string;
 }
 /**
  * 
@@ -212,6 +224,12 @@ export interface RuleData {
      * @memberof RuleData
      */
     'case_sensitive': boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof RuleData
+     */
+    'account_id': number;
 }
 /**
  * 

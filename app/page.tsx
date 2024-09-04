@@ -18,7 +18,7 @@ export default function Home() {
     return (
         <main className="flex min-h-screen flex-row items-center justify-between">
             <div className="p-24">Left</div>
-            <div className="flex min-h-screen flex-col items-center justify-between p-6">
+            <div className="flex min-h-screen flex-col items-center justify-between p-6 w-full">
                 <div>
                     <AccountSelector
                         api={api}
@@ -27,7 +27,7 @@ export default function Home() {
                     />
                 </div>
                 {account ? (
-                    <div>
+                    <div className="w-full">
                         <div className="flex flex-col items-center justify-between">
                             <span>Account details</span>
                         </div>
@@ -40,7 +40,9 @@ export default function Home() {
                     <span>You need a budget!</span>
                 </div>
             </div>
-            <div>{/* <span>Right column hidden</span> */}</div>
+            <div className="p-24">
+                <span>Right</span>
+            </div>
         </main>
     )
 }
