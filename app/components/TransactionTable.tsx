@@ -21,7 +21,7 @@ export const formatter = new Intl.NumberFormat('en-US', {
 type categoryMap = Map<number, CategoryData>
 type superMap = Map<number, SupercategoryData>
 
-export function TransactionSummary(props: {
+export function TransactionTable(props: {
     api: DefaultApi
     account: AccountData | null
 }): React.ReactElement {

@@ -3,7 +3,7 @@
 import { AccountData, ApplyRulesResponse, DefaultApi } from '@/openapi'
 import React, { ReactNode, useState } from 'react'
 import { ModalPopup } from './ModalPopup'
-import { formatter } from './TransactionSummary'
+import { formatter } from './TransactionTable'
 
 export function CategorizeTransactionsButton(props: {
     api: DefaultApi
